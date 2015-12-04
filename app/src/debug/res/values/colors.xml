@@ -1,0 +1,9 @@
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="mytv">#BFF5F5F5</color>
+    <color name="loginbtn">#ff4081</color>
+    <color name="signupbtn">#2196f3</color>
+    <color name="textviewbackground">#BFfafafa</color>
+</resources>
