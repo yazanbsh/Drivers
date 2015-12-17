@@ -1,8 +1,10 @@
 package com.example.yazan.drivers;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,20 +36,26 @@ public class MapsActivity extends ActionBarActivity {
     boolean isSet=false;
     boolean isLoged=false;
     boolean isNet=false;
+    Dialog startDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
-        runnable.run();
+        startDialog=new Dialog(this,R.style.startdialog);
+        startDialog.setContentView(R.layout.startdialog);
+
+        //        runnable.run();
         if (!isLoged)
         {
             TextView mytv= (TextView) findViewById(R.id.tvbar);
             mytv.setText("please login to use the app!");
+            loginmethod();
         }
 
-        loginmethod();
+
         ///////
 
         FloatingActionButton fab= (FloatingActionButton) findViewById(R.id.fab);
@@ -56,37 +64,15 @@ public class MapsActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 TextView mytv = (TextView) findViewById(R.id.tvbar);
-                mytv.setText("Hello there!");
-                loginmethod();
+                if (!isLoged) {
+                    mytv.setText("Hello there!");
+                    loginmethod();
+                }
 
-            }
-        });
-
-        Button settinghomebutton= (Button)findViewById(R.id.settinhomegbutton);
-        settinghomebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settingmethod();
             }
         });
     }
 
-//    private class checknet extends AsyncTask<String, Void, String> {
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String data=null;
-//            if (hasActiveInternetConnection())data="true";
-//            else data="false";
-//            return data;
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//
-//        }
-//    }
 
     @Override
     protected void onResume() {
@@ -156,14 +142,8 @@ public class MapsActivity extends ActionBarActivity {
     }
 */
 
-    private void updateLabel() {
 
-        String myFormat = "MM/dd/yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        //editText.setText(sdf.format(myCalendar.getTime()));
-
-    }
-
+/*
     Runnable runnable = new Runnable() {
         final Handler handler = new Handler();
 
@@ -200,6 +180,7 @@ public class MapsActivity extends ActionBarActivity {
         }
 
     };
+*/
 //    handler.postDelayed(runnable, 1000);
 
 
@@ -224,138 +205,35 @@ public class MapsActivity extends ActionBarActivity {
     {
         if (isLoged==false)
         {
-            final Dialog startDialog=new Dialog(this,R.style.startdialog);
-            startDialog.setContentView(R.layout.startdialog);
-            final Dialog loginDialog=new Dialog(this,R.style.startdialog);
-            final Dialog signupDialog=new Dialog(this,R.style.startdialog);
-            loginDialog.setContentView(R.layout.logindialog);
-            signupDialog.setContentView(R.layout.signupdialog);
-
             startDialog.show();
             Button loginButton= (Button) startDialog.findViewById(R.id.sdlogin);
-            Button signupButton= (Button) startDialog.findViewById(R.id.sdsignup);
-            final EditText editText= (EditText) signupDialog.findViewById(R.id.datesignupet);
-            editText.setInputType(InputType.TYPE_NULL);
 
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    loginDialog.show();
-                    Button doneLogin= (Button) loginDialog.findViewById(R.id.doneloginbtn);
-                    doneLogin.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            EditText user= (EditText) loginDialog.findViewById(R.id.usersigninet);
-                            EditText pass= (EditText) loginDialog.findViewById(R.id.passsigninet);
-                            if (!isOnline())
-                                Toast.makeText(getBaseContext(), "please check your internet connection", Toast.LENGTH_LONG).show();
-
-                            else if (user.getText().toString().length()==0)
-                            {
-                                Toast.makeText(getBaseContext(), "please enter username", Toast.LENGTH_LONG).show();
-                            }
-                            else if (pass.getText().toString().length()==0)
-                            {
-                                Toast.makeText(getBaseContext(), "please enter password", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                }
-            });
-
-            signupButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    signupDialog.show();
-                    Button doneSignup= (Button) signupDialog.findViewById(R.id.donesignupbtn);
-                    doneSignup.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            EditText user= (EditText) signupDialog.findViewById(R.id.usersignupet);
-                            EditText pass= (EditText) signupDialog.findViewById(R.id.passsignupet);
-                            EditText conpass= (EditText) signupDialog.findViewById(R.id.passconfirmsignupet);
-                            EditText email= (EditText) signupDialog.findViewById(R.id.emailsignupet);
-                            EditText BD= (EditText) signupDialog.findViewById(R.id.datesignupet);
-
-                            if (!isOnline())
-                                Toast.makeText(getBaseContext(), "please check your internet connection", Toast.LENGTH_LONG).show();
-
-                            else if (user.getText().toString().length()==0)
-                            {
-                                Toast.makeText(getBaseContext(), "please enter username", Toast.LENGTH_LONG).show();
-                            }
-                            else if (pass.getText().toString().length()==0)
-                            {
-                                Toast.makeText(getBaseContext(), "please enter password", Toast.LENGTH_LONG).show();
-                            }
-                            else if (conpass.getText().toString().length()==0)
-                            {
-                                Toast.makeText(getBaseContext(), "please enter password confirm", Toast.LENGTH_LONG).show();
-                            }
-                            else if (email.getText().toString().length()==0)
-                            {
-                                Toast.makeText(getBaseContext(), "please enter Email", Toast.LENGTH_LONG).show();
-                            }
-                            else if (BD.getText().toString().length()==0)
-                            {
-                                Toast.makeText(getBaseContext(), "please enter Birthday", Toast.LENGTH_LONG).show();
-                            }
-                            else if (!pass.getText().toString().equals(conpass.getText().toString()))
-                            {
-                                Toast.makeText(getBaseContext(), "entered password must match password confirm", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                }
-            });
-
-            /////////////
-            final Calendar myCalendar = Calendar.getInstance();
-
-            final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-                @Override
-                public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                      int dayOfMonth) {
-                    // TODO Auto-generated method stub
-                    myCalendar.set(Calendar.YEAR, year);
-                    myCalendar.set(Calendar.MONTH, monthOfYear);
-                    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    String myFormat = "MM/dd/yy"; //In which you need put here
-                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-                    EditText editText= (EditText) signupDialog.findViewById(R.id.datesignupet);
-                    editText.setInputType(InputType.TYPE_NULL);
-                    editText.setText(sdf.format(myCalendar.getTime()));
-                }
-
-            };
-            /////////////////////
-            editText.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    new DatePickerDialog(MapsActivity.this,android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth, date, myCalendar
-                            .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                            myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                }
-            });
-            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-
-                    if (hasFocus){
-
-                        new DatePickerDialog(MapsActivity.this,android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth, date, myCalendar
-                                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                    }
+                    Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
+                    startActivityForResult(intent, 1);
                 }
             });
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String result=data.getStringExtra("result");
+                isLoged=true;
+                TextView textView=(TextView) findViewById(R.id.tvbar);
+                textView.setText("hello "+result);
+                startDialog.dismiss();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActivityResult
 
     public void settingmethod()
     {
@@ -378,5 +256,7 @@ public class MapsActivity extends ActionBarActivity {
         });
 
     }
+
+
 
 }

@@ -16,16 +16,6 @@
         android:orientation="vertical">
 
 
-        <Button
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:id="@+id/settinhomegbutton"
-            android:background="@drawable/setting"
-            android:layout_marginTop="70dp"
-            android:layout_alignTop="@+id/fab"
-            android:layout_alignLeft="@+id/fab"
-            android:layout_alignStart="@+id/fab"/>
-
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"

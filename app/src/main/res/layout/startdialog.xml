@@ -18,19 +18,4 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:text="SIGN UP"
-        android:id="@+id/sdsignup"
-        android:gravity="center"
-        android:background="@color/accent"
-        android:textSize="40dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:visibility="invisible"
-        />
 </RelativeLayout>

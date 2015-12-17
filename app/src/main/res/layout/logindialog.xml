@@ -10,7 +10,7 @@
         android:layout_marginTop="50dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:hint="User name"
+        android:hint="Driver name"
         android:textColor="@color/primary_text"
         android:textColorHint="@color/primary_text" />
 
@@ -21,7 +21,7 @@
         android:ems="10"
         android:id="@+id/passsigninet"
         android:layout_marginTop="24dp"
-        android:hint="Password"
+        android:hint="Driver ID"
         android:layout_below="@+id/usersigninet"
         android:layout_centerHorizontal="true"
         android:textColor="@color/primary_text"
