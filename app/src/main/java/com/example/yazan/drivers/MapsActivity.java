@@ -111,6 +111,7 @@ public class MapsActivity extends ActionBarActivity {
                 else {
                     setCarLocation();
                     Toast.makeText(getBaseContext(),"showing now",Toast.LENGTH_SHORT).show();
+                    //setCarLocation();
                     showUsersMethode();
 //                    assignCarMethode();
 
@@ -218,7 +219,7 @@ public class MapsActivity extends ActionBarActivity {
                         if (!isSet){
 
                             MarkerOptions marker=new MarkerOptions().position(new LatLng(arg0.getLatitude(), arg0.getLongitude())).title("U'r here!").snippet("U'r here!");
-                            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.user));
+                            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.car));
                             mMap.addMarker(marker);
                             userLatLng=new LatLng(arg0.getLatitude(),arg0.getLongitude());
                             isSet=true;
@@ -475,10 +476,13 @@ public class MapsActivity extends ActionBarActivity {
 
     public void setCarLocation(){
         rq = Volley.newRequestQueue(getApplicationContext());
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+        final String id = settings.getString("Id", "0");
 
         String s1=""+userLatLng.latitude;
         String s2=""+userLatLng.longitude;
-        String s3="27";
+        String s3=id;
         String url= carLocationurl +"?id="+s3+"&geolat="+s1+"&geolong="+s2;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,null, new Response.Listener<JSONObject>() {
 
@@ -562,11 +566,10 @@ public class MapsActivity extends ActionBarActivity {
                 @Override
                 public void onResponse(JSONObject jsonObject) {
                     try {
-                        JSONArray array=jsonObject.getJSONArray("cars");
-                        for (int i=0;i<array.length();i+=2){
-                            JSONObject object=array.getJSONObject(i);
-                            JSONObject object2=array.getJSONObject(i+1);
-
+//                        Toast.makeText(getApplication(),jsonObject.toString(),Toast.LENGTH_LONG).show();
+                        JSONArray array=jsonObject.getJSONArray("users");
+                        if (array.length()!=0){
+                            JSONObject object=array.getJSONObject(0);
                             mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                                 // Use default InfoWindow frame
@@ -582,8 +585,6 @@ public class MapsActivity extends ActionBarActivity {
                                     // Getting view from the layout file info_window_layout
                                     View v = getLayoutInflater().inflate(R.layout.info_window, null);
                                     TextView tvDrv = (TextView) v.findViewById(R.id.tv_driver);
-//                                    TextView tvOfc = (TextView) v.findViewById(R.id.tv_office);
-//                                    TextView tvPhn= (TextView) v.findViewById(R.id.tv_phone);
                                     tvDrv.setText(arg0.getSnippet());
 
                                     // Returning the view containing InfoWindow contents
@@ -592,20 +593,21 @@ public class MapsActivity extends ActionBarActivity {
                                 }
                             });
 
-                            String snip=object.getString("driver") + "\n" + object2.getString("officeName")+"\n"+object.getString("phone");
-
-
+                            String snip=object.getString("name") + "\n" + object.getString("phone");
+                            String snip2="distenation";
 
                             MarkerOptions markerOptions=new MarkerOptions().position(new LatLng(object.getDouble("geolat"),
                                     object.getDouble("geolong"))).snippet(snip);
+                            MarkerOptions markerOptions2=new MarkerOptions().position(new LatLng(object.getDouble("distlat"),
+                                    object.getDouble("distlong"))).snippet(snip2);
 
-                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.car));
+                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.user));
+                            markerOptions2.icon(BitmapDescriptorFactory.fromResource(R.drawable.distenation));
 
                             Marker marker = mMap.addMarker(markerOptions);
+                            Marker marker2 = mMap.addMarker(markerOptions2);
 
-                            // Showing InfoWindow on the GoogleMap
-//                            marker.showInfoWindow();
-//                            mMap.addMarker(marker);
+
                         }
                     }
                     catch (JSONException e){
