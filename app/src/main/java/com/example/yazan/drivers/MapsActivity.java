@@ -56,6 +56,7 @@ public class MapsActivity extends ActionBarActivity {
     boolean isNet=false;
     LatLng userLatLng;
 
+
     Dialog startDialog;
 
     String showUserUrl ="http://www.gradwebsite-domain.usa.cc/show_users.php";
@@ -65,10 +66,12 @@ public class MapsActivity extends ActionBarActivity {
     String reserveUrl="http://www.gradwebsite-domain.usa.cc/reservation.php";
     String showObsUrl="http://www.gradwebsite-domain.usa.cc/show_obstacles.php";
     String addObsUrl="http://www.gradwebsite-domain.usa.cc/obstacles.php";
+    String historyUrl="http://www.gradwebsite-domain.usa.cc/history.php";
     String reservetime="";
 
     String descriptionobs="";
     String removeobsid="";
+    String assigneduserid="";
 
 
     RequestQueue rq;
@@ -116,11 +119,11 @@ public class MapsActivity extends ActionBarActivity {
                 }
 
                 else {
-                    setCarLocation();
+                    //setCarLocation();
                     Toast.makeText(getBaseContext(),"showing now",Toast.LENGTH_SHORT).show();
                     //setCarLocation();
                     showUsersMethode();
-                    showObsMethode();
+                    //showObsMethode();
 //                    assignCarMethode();
 
                 }
@@ -375,7 +378,13 @@ public class MapsActivity extends ActionBarActivity {
         final Dialog removeobsdialog=new Dialog(this,R.style.AppTheme);
         removeobsdialog.setContentView(R.layout.removeobsdialog);
         settingdialog.show();
-
+        Button historybtn= (Button) settingdialog.findViewById(R.id.historybtn);
+        historybtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                historyMethod();
+            }
+        });
         Button addobsbtn= (Button) settingdialog.findViewById(R.id.addobsbtn);
         addobsbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -607,10 +616,11 @@ public class MapsActivity extends ActionBarActivity {
                 @Override
                 public void onResponse(JSONObject jsonObject) {
                     try {
-//                        Toast.makeText(getApplication(),jsonObject.toString(),Toast.LENGTH_LONG).show();
                         JSONArray array=jsonObject.getJSONArray("users");
                         if (array.length()!=0){
                             JSONObject object=array.getJSONObject(0);
+//                            Toast.makeText(getApplication(),object.toString(),Toast.LENGTH_LONG).show();
+
                             mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                                 // Use default InfoWindow frame
@@ -633,14 +643,16 @@ public class MapsActivity extends ActionBarActivity {
 
                                 }
                             });
-
+                            assigneduserid=object.getString("id");
+                            l1=object.getDouble("geolat");
+                            l2=object.getDouble("geolong");
                             String snip=object.getString("name") + "\n" + object.getString("phone");
                             String snip2="distenation";
 
-                            mMap.clear();
+                            /*mMap.clear();
                             MarkerOptions markeru=new MarkerOptions().position(new LatLng(userLatLng.latitude,userLatLng.longitude)).title("U'r here!").snippet("U'r here!");
                             markeru.icon(BitmapDescriptorFactory.fromResource(R.drawable.car));
-                            mMap.addMarker(markeru);
+                            mMap.addMarker(markeru);*/
 
                             MarkerOptions markerOptions=new MarkerOptions().position(new LatLng(object.getDouble("geolat"),
                                     object.getDouble("geolong"))).snippet(snip);
@@ -657,7 +669,9 @@ public class MapsActivity extends ActionBarActivity {
                         }
                     }
                     catch (JSONException e){
-                        Toast.makeText(getBaseContext(),"error in show cars",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getBaseContext(),"error in show users",Toast.LENGTH_LONG).show();
+                        Log.d("test the show",e.toString());
+                        e.printStackTrace();
                     }
 
                 }
@@ -814,6 +828,39 @@ public class MapsActivity extends ActionBarActivity {
             rq.add(request);
         }
 
+    }
+
+    public void historyMethod(){
+        boolean ready=false;
+        if (!isOnline())
+            Toast.makeText(getBaseContext(), "please check your internet connection", Toast.LENGTH_LONG).show();
+        else ready=true;
+
+
+        if(ready) {
+
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+            final String id = settings.getString("Id", "0");
+            rq = Volley.newRequestQueue(getApplicationContext());
+            String url= historyUrl +"?userId="+assigneduserid+"&carId="+id+"&fromGeolat="+"&fromGeolong="
+                    +"&toGeolat="+userLatLng.latitude+"&toGeolong="+userLatLng.longitude;
+            Log.d("url remove is",url);
+
+            JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+//                    Toast.makeText(getBaseContext(),"error in add obs",Toast.LENGTH_SHORT).show();
+                }
+            });
+            assigneduserid="";
+            rq.add(request);
+        }
     }
 
 

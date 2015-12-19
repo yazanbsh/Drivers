@@ -40,4 +40,12 @@
         android:layout_above="@+id/addobsbtn"
         android:layout_centerHorizontal="true"
         android:visibility="visible"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/historybtn"
+        android:layout_above="@+id/removeobsbtn"
+        android:layout_centerHorizontal="true"
+        android:text="add delivery to history" />
 </RelativeLayout>
