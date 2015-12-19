@@ -62,6 +62,7 @@ public class MapsActivity extends ActionBarActivity {
     String carLocationurl ="http://www.gradwebsite-domain.usa.cc/car_location.php";
     String assignCarUrl="http://gradwebsite-domain.usa.cc/assign.php";
     String reserveUrl="http://www.gradwebsite-domain.usa.cc/reservation.php";
+    String showObsUrl="http://www.gradwebsite-domain.usa.cc/show_obstacles.php";
     String reservetime="";
 
     RequestQueue rq;
@@ -113,6 +114,7 @@ public class MapsActivity extends ActionBarActivity {
                     Toast.makeText(getBaseContext(),"showing now",Toast.LENGTH_SHORT).show();
                     //setCarLocation();
                     showUsersMethode();
+                    showObsMethode();
 //                    assignCarMethode();
 
                 }
@@ -626,6 +628,79 @@ public class MapsActivity extends ActionBarActivity {
         }
 
     }
+
+    public void showObsMethode(){
+        boolean ready=false;
+        if (!isOnline())
+            Toast.makeText(getBaseContext(), "please check your internet connection", Toast.LENGTH_LONG).show();
+        else ready=true;
+
+
+        if(ready) {
+
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+            final String id = settings.getString("Id", "0");
+            rq = Volley.newRequestQueue(getApplicationContext());
+            String url= showObsUrl +"?id="+id;
+            JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+                    try {
+                        Toast.makeText(getApplication(),jsonObject.toString(),Toast.LENGTH_LONG).show();
+                        JSONArray array=jsonObject.getJSONArray("obstacles");
+                        if (array.length()!=0){
+                            JSONObject object=array.getJSONObject(0);
+                            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                                // Use default InfoWindow frame
+                                @Override
+                                public View getInfoWindow(Marker arg0) {
+                                    return null;
+                                }
+
+                                // Defines the contents of the InfoWindow
+                                @Override
+                                public View getInfoContents(Marker arg0) {
+
+                                    // Getting view from the layout file info_window_layout
+                                    View v = getLayoutInflater().inflate(R.layout.info_window, null);
+                                    TextView tvDrv = (TextView) v.findViewById(R.id.tv_driver);
+                                    tvDrv.setText(arg0.getSnippet());
+
+                                    // Returning the view containing InfoWindow contents
+                                    return v;
+
+                                }
+                            });
+
+                            String snip=object.getString("describtion");
+                            MarkerOptions markerOptions=new MarkerOptions().position(new LatLng(object.getDouble("geolat"),
+                                    object.getDouble("geolong"))).snippet(snip);
+
+                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.obstacle));
+
+                            Marker marker = mMap.addMarker(markerOptions);
+
+                        }
+                    }
+                    catch (JSONException e){
+                        Toast.makeText(getBaseContext(),"error in show obstacles",Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+
+                }
+            });
+            rq.add(request);
+
+        }
+
+    }
+
 
     public void assignCarMethode() {
         boolean ready = false;
