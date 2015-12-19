@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        rq = Volley.newRequestQueue(getApplicationContext());
     }
 
 
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginMethode(){
-
+        rq = Volley.newRequestQueue(getApplicationContext());
         final EditText user = (EditText) findViewById(R.id.usersigninet);
         final EditText pass = (EditText) findViewById(R.id.passsigninet);
         boolean ready=false;
@@ -98,15 +98,15 @@ public class LoginActivity extends AppCompatActivity {
 
         if(ready) {
             String em=(user.getText().toString());
-            String pas=pass.getText().toString();
-            String url2=url+"?driver="+em+"&password="+pas;
+            final String pas=pass.getText().toString();
+            String url2=url+"?driver="+em+"&id="+pas;
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url2,null, new Response.Listener<JSONObject>() {
 
                 @Override
                 public void onResponse(JSONObject arg0) {
                     // TODO Auto-generated method stub
                     try {
-                        JSONArray array=arg0.getJSONArray("users");
+                        JSONArray array=arg0.getJSONArray("cars");
                         JSONObject object=array.getJSONObject(0);
                         String string=object.getString("message");
 //                        Toast.makeText(getBaseContext(),arg0.toString(),Toast.LENGTH_LONG).show();
@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                         else {
                             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
                             SharedPreferences.Editor editor = settings.edit();
-                            editor.putString("Id", string);
+                            editor.putString("Id", pas);
                             editor.putBoolean("Flag", true);
                             editor.commit();
                             loginSuccess(user.getText().toString());
@@ -134,21 +134,10 @@ public class LoginActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError arg0) {
                     // TODO Auto-generated method stub
                     Toast.makeText(getBaseContext(),"something went wrong, please try again",Toast.LENGTH_LONG).show();
+                    Log.d("in logout", arg0.toString());
 
                 }
-            }) /*{
-
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    // TODO Auto-generated method stub
-                    Map<String, String> parameters = new HashMap<String, String>();
-
-                    parameters.put("email", user.getText().toString());
-                    parameters.put("password", pass.getText().toString());
-                    return parameters;
-                }
-
-            }*/;
+            });
 
             rq.add(request);
         }

@@ -58,7 +58,7 @@ public class MapsActivity extends ActionBarActivity {
     Dialog startDialog;
 
     String showUserUrl ="http://www.gradwebsite-domain.usa.cc/show_users.php";
-    String logouturl="http://www.gradwebsite-domain.usa.cc/logout_car.php";
+    String logouturl="http://gradwebsite-domain.usa.cc/logout_car.php";
     String carLocationurl ="http://www.gradwebsite-domain.usa.cc/car_location.php";
     String assignCarUrl="http://gradwebsite-domain.usa.cc/assign.php";
     String reserveUrl="http://www.gradwebsite-domain.usa.cc/reservation.php";
@@ -405,6 +405,8 @@ public class MapsActivity extends ActionBarActivity {
 
             rq = Volley.newRequestQueue(getApplicationContext());
             String url=logouturl+"?id="+id;
+            Log.d("url is",url);
+
 
             JsonObjectRequest jOR = new JsonObjectRequest(Request.Method.GET, url,null, new Response.Listener<JSONObject>()
             {
@@ -415,13 +417,13 @@ public class MapsActivity extends ActionBarActivity {
 
                     try {
 
-                        JSONArray array1=response.getJSONArray("userLogout");
+                        JSONArray array1=response.getJSONArray("carLogout");
                         JSONObject object1=array1.getJSONObject(0);
                         String status = object1.getString("message");
-                        Toast.makeText(getBaseContext(),response.toString(),Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getBaseContext(),response.toString(),Toast.LENGTH_LONG).show();
 
                         if(status.equals("logged_out_successfuly.")){
-                            Toast.makeText(getBaseContext(),"looooooooooooooooogout",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(),"logged out",Toast.LENGTH_LONG).show();
                             isLoged = false;
                             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
                             SharedPreferences.Editor editor = settings.edit();
