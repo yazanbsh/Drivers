@@ -43,7 +43,6 @@ import static com.example.yazan.drivers.CommonUtilities.EXTRA_MESSAGE;
 import static com.example.yazan.drivers.CommonUtilities.SENDER_ID;
 import static com.example.yazan.drivers.SignUpActivity.PREFS_NAME;
 
-
 public class MapsActivity extends ActionBarActivity {
 
     AsyncTask<Void, Void, Void> mRegisterTask;
@@ -58,9 +57,9 @@ public class MapsActivity extends ActionBarActivity {
 
     Dialog startDialog;
 
-    String showCarUrl="http://www.gradwebsite-domain.usa.cc/show_cars.php";
-    String logouturl="http://www.gradwebsite-domain.usa.cc/logout_user.php";
-    String userLocationurl="http://www.gradwebsite-domain.usa.cc/user_location.php";
+    String showUserUrl ="http://www.gradwebsite-domain.usa.cc/show_users.php";
+    String logouturl="http://www.gradwebsite-domain.usa.cc/logout_car.php";
+    String carLocationurl ="http://www.gradwebsite-domain.usa.cc/car_location.php";
     String assignCarUrl="http://gradwebsite-domain.usa.cc/assign.php";
     String reserveUrl="http://www.gradwebsite-domain.usa.cc/reservation.php";
     String reservetime="";
@@ -112,7 +111,7 @@ public class MapsActivity extends ActionBarActivity {
                 else {
                     /*setUserLocation();
                     Toast.makeText(getBaseContext(),"showing now",Toast.LENGTH_SHORT).show();
-                    showCarsMethode();
+                    showUsersMethode();
                     assignCarMethode();*/
 
                     /*
@@ -319,7 +318,7 @@ public class MapsActivity extends ActionBarActivity {
                 public void onClick(View v) {
 //                    loginDialog.show();
                     Intent intent = new Intent(MapsActivity.this,LoginActivity.class);
-                    startActivityForResult(intent,1);
+                    startActivityForResult(intent, 1);
 
                 }
             });
@@ -482,7 +481,7 @@ public class MapsActivity extends ActionBarActivity {
         String s1=""+userLatLng.latitude;
         String s2=""+userLatLng.longitude;
         String s3="27";
-        String url=userLocationurl+"?id="+s3+"&geolat="+s1+"&geolong="+s2;
+        String url= carLocationurl +"?id="+s3+"&geolat="+s1+"&geolong="+s2;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -560,7 +559,7 @@ public class MapsActivity extends ActionBarActivity {
 
             final String id = settings.getString("Id", "0");
             rq = Volley.newRequestQueue(getApplicationContext());
-            String url=showCarUrl+"?id="+id;
+            String url= showUserUrl +"?id="+id;
             JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonObject) {
