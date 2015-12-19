@@ -25,19 +25,19 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Change password"
-        android:id="@+id/setpasschangebtn"
+        android:text="report obstacles"
+        android:id="@+id/addobsbtn"
         android:layout_above="@+id/logoutbtn"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="12dp"
-        android:visibility="invisible"/>
+        android:visibility="visible"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit personal info"
-        android:id="@+id/setinfochangebutton"
-        android:layout_above="@+id/setpasschangebtn"
+        android:text="remove an obstacle"
+        android:id="@+id/removeobsbtn"
+        android:layout_above="@+id/addobsbtn"
         android:layout_centerHorizontal="true"
-        android:visibility="invisible"/>
+        android:visibility="visible"/>
 </RelativeLayout>

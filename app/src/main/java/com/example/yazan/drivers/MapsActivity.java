@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +64,12 @@ public class MapsActivity extends ActionBarActivity {
     String assignCarUrl="http://gradwebsite-domain.usa.cc/assign.php";
     String reserveUrl="http://www.gradwebsite-domain.usa.cc/reservation.php";
     String showObsUrl="http://www.gradwebsite-domain.usa.cc/show_obstacles.php";
+    String addObsUrl="http://www.gradwebsite-domain.usa.cc/obstacles.php";
     String reservetime="";
+
+    String descriptionobs="";
+    String removeobsid="";
+
 
     RequestQueue rq;
 
@@ -364,15 +370,48 @@ public class MapsActivity extends ActionBarActivity {
         final Dialog editinfodialog=new Dialog(this,R.style.AppTheme);
         editinfodialog.setContentView(R.layout.setchangepage);
 
-        final Dialog passchangedialog=new Dialog(this,R.style.AppTheme);
-        passchangedialog.setContentView(R.layout.passchangefrag);
+        final Dialog addobsdialog=new Dialog(this,R.style.AppTheme);
+        addobsdialog.setContentView(R.layout.addobsdialog);
+        final Dialog removeobsdialog=new Dialog(this,R.style.AppTheme);
+        removeobsdialog.setContentView(R.layout.removeobsdialog);
         settingdialog.show();
 
-        Button changepass= (Button) settingdialog.findViewById(R.id.setpasschangebtn);
-        changepass.setOnClickListener(new View.OnClickListener() {
+        Button addobsbtn= (Button) settingdialog.findViewById(R.id.addobsbtn);
+        addobsbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                passchangedialog.show();
+                addobsdialog.show();
+                Button addobsdonebtn = (Button) addobsdialog.findViewById(R.id.addobsdonebtn);
+                addobsdonebtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText obsdes = (EditText) addobsdialog.findViewById(R.id.addobset);
+                        if (obsdes.getText().toString() == null) descriptionobs = "";
+                        else descriptionobs = obsdes.getText().toString();
+                        addObsMethod();
+                        addobsdialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        Button removeobsbtn= (Button) settingdialog.findViewById(R.id.removeobsbtn);
+        removeobsbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeobsdialog.show();
+                Button removedonebtn= (Button) removeobsdialog.findViewById(R.id.removeobsdonebtn);
+                removedonebtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeobsdialog.show();
+                        EditText obsid= (EditText) removeobsdialog.findViewById(R.id.removeobset);
+                        if (obsid.getText().toString()==null)removeobsid="";
+                        else removeobsid=obsid.getText().toString();
+                        removeObsMethod();
+                        removeobsdialog.dismiss();
+                    }
+                });
             }
         });
 
@@ -598,6 +637,11 @@ public class MapsActivity extends ActionBarActivity {
                             String snip=object.getString("name") + "\n" + object.getString("phone");
                             String snip2="distenation";
 
+                            mMap.clear();
+                            MarkerOptions markeru=new MarkerOptions().position(new LatLng(userLatLng.latitude,userLatLng.longitude)).title("U'r here!").snippet("U'r here!");
+                            markeru.icon(BitmapDescriptorFactory.fromResource(R.drawable.car));
+                            mMap.addMarker(markeru);
+
                             MarkerOptions markerOptions=new MarkerOptions().position(new LatLng(object.getDouble("geolat"),
                                     object.getDouble("geolong"))).snippet(snip);
                             MarkerOptions markerOptions2=new MarkerOptions().position(new LatLng(object.getDouble("distlat"),
@@ -647,10 +691,15 @@ public class MapsActivity extends ActionBarActivity {
                 @Override
                 public void onResponse(JSONObject jsonObject) {
                     try {
-                        Toast.makeText(getApplication(),jsonObject.toString(),Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplication(),jsonObject.toString(),Toast.LENGTH_LONG).show();
                         JSONArray array=jsonObject.getJSONArray("obstacles");
                         if (array.length()!=0){
-                            JSONObject object=array.getJSONObject(0);
+                            mMap.clear();
+                            MarkerOptions markeru=new MarkerOptions().position(new LatLng(userLatLng.latitude,userLatLng.longitude)).title("U'r here!").snippet("U'r here!");
+                            markeru.icon(BitmapDescriptorFactory.fromResource(R.drawable.car));
+                            mMap.addMarker(markeru);
+                            for (int i=0;i<array.length();i++){
+                            JSONObject object=array.getJSONObject(i);
                             mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                                 // Use default InfoWindow frame
@@ -674,14 +723,14 @@ public class MapsActivity extends ActionBarActivity {
                                 }
                             });
 
-                            String snip=object.getString("describtion");
+                            String snip="id= "+object.getString("id")+"\n"+object.getString("describtion");
                             MarkerOptions markerOptions=new MarkerOptions().position(new LatLng(object.getDouble("geolat"),
                                     object.getDouble("geolong"))).snippet(snip);
 
                             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.obstacle));
 
                             Marker marker = mMap.addMarker(markerOptions);
-
+                            }
                         }
                     }
                     catch (JSONException e){
@@ -700,6 +749,73 @@ public class MapsActivity extends ActionBarActivity {
         }
 
     }
+
+    public void addObsMethod(){
+        boolean ready=false;
+        if (!isOnline())
+            Toast.makeText(getBaseContext(), "please check your internet connection", Toast.LENGTH_LONG).show();
+        else ready=true;
+
+
+        if(ready) {
+
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+            final String id = settings.getString("Id", "0");
+            rq = Volley.newRequestQueue(getApplicationContext());
+            String url= addObsUrl +"?carId="+id+"&describtion="+descriptionobs+"&geolat="+userLatLng.latitude+"&geolong="+userLatLng.longitude+"&status=on&id=";
+
+            JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+//                    Toast.makeText(getBaseContext(),"error in add obs",Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            rq.add(request);
+        }
+
+    }
+
+    public void removeObsMethod(){
+        boolean ready=false;
+        if (!isOnline())
+            Toast.makeText(getBaseContext(), "please check your internet connection", Toast.LENGTH_LONG).show();
+        else ready=true;
+
+
+        if(ready) {
+
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+            final String id = settings.getString("Id", "0");
+            rq = Volley.newRequestQueue(getApplicationContext());
+            String url= addObsUrl +"?carId="+id+"&describtion="+descriptionobs+"&geolat="+userLatLng.latitude+"&geolong="
+                    +userLatLng.longitude+"&status=off&id="+removeobsid;
+            Log.d("url remove is",url);
+
+            JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+//                    Toast.makeText(getBaseContext(),"error in add obs",Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            rq.add(request);
+        }
+
+    }
+
 
 
     public void assignCarMethode() {
