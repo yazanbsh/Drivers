@@ -2,6 +2,7 @@ package com.example.yazan.drivers;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,17 +10,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
+import static com.example.yazan.drivers.SignUpActivity.PREFS_NAME;
+
 
 /**
  * Created by Yazan on 12/16/2015.
@@ -92,12 +97,36 @@ public class LoginActivity extends AppCompatActivity {
         else ready=true;
 
         if(ready) {
-            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            String em=(user.getText().toString());
+            String pas=pass.getText().toString();
+            String url2=url+"?driver="+em+"&password="+pas;
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url2,null, new Response.Listener<JSONObject>() {
 
                 @Override
-                public void onResponse(String arg0) {
+                public void onResponse(JSONObject arg0) {
                     // TODO Auto-generated method stub
-                    loginSuccess(user.getText().toString());
+                    try {
+                        JSONArray array=arg0.getJSONArray("users");
+                        JSONObject object=array.getJSONObject(0);
+                        String string=object.getString("message");
+//                        Toast.makeText(getBaseContext(),arg0.toString(),Toast.LENGTH_LONG).show();
+                        if (string.equals("log_in_failed.")){
+                            Toast.makeText(getBaseContext(),"erooooooooooooooooor",Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("Id", string);
+                            editor.putBoolean("Flag", true);
+                            editor.commit();
+                            loginSuccess(user.getText().toString());
+
+                        }
+
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }, new Response.ErrorListener() {
 
@@ -107,19 +136,19 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(),"something went wrong, please try again",Toast.LENGTH_LONG).show();
 
                 }
-            }) {
+            }) /*{
 
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     // TODO Auto-generated method stub
                     Map<String, String> parameters = new HashMap<String, String>();
 
-                    parameters.put("name", user.getText().toString());
-                    parameters.put("pass", pass.getText().toString());
+                    parameters.put("email", user.getText().toString());
+                    parameters.put("password", pass.getText().toString());
                     return parameters;
                 }
 
-            };
+            }*/;
 
             rq.add(request);
         }
