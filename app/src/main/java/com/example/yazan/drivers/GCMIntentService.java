@@ -13,8 +13,8 @@ import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
 
-import static com.example.yazan.icab.CommonUtilities.SENDER_ID;
-import static com.example.yazan.icab.CommonUtilities.displayMessage;
+import static com.example.yazan.drivers.CommonUtilities.SENDER_ID;
+import static com.example.yazan.drivers.CommonUtilities.displayMessage;
 
 public class GCMIntentService extends GCMBaseIntentService {
 

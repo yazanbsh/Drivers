@@ -38,10 +38,10 @@
         android:hint="Birthday"
         android:textColor="@color/primary_text"
         android:textColorHint="@color/primary_text"
-        android:layout_below="@+id/emailsignupet"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/phonesignupet"
         android:layout_alignLeft="@+id/usersignupet"
-        android:layout_alignStart="@+id/usersignupet"
-        android:layout_marginTop="24dp" />
+        android:layout_alignStart="@+id/usersignupet" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -79,5 +79,20 @@
         android:layout_below="@+id/datesignupet"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/phonesignupet"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/emailsignupet"
+        android:layout_centerHorizontal="true"
+        android:hint="Phone number (10 digits)"
+        android:textColor="@color/primary_text"
+        android:textColorHint="@color/primary_text"
+
+        />
 
 </RelativeLayout>

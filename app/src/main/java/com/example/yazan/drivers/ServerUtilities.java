@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import static com.example.yazan.icab.CommonUtilities.SERVER_URL;
-import static com.example.yazan.icab.CommonUtilities.TAG;
-import static com.example.yazan.icab.CommonUtilities.displayMessage;
+import static com.example.yazan.drivers.CommonUtilities.SERVER_URL;
+import static com.example.yazan.drivers.CommonUtilities.TAG;
+import static com.example.yazan.drivers.CommonUtilities.displayMessage;
 
 public final class ServerUtilities {
 

@@ -109,15 +109,11 @@ public class MapsActivity extends ActionBarActivity {
                 }
 
                 else {
-                    /*setUserLocation();
+                    setCarLocation();
                     Toast.makeText(getBaseContext(),"showing now",Toast.LENGTH_SHORT).show();
                     showUsersMethode();
-                    assignCarMethode();*/
+//                    assignCarMethode();
 
-                    /*
-                    Intent intent = new Intent(MapsActivity.this,Reserve_Activity.class);
-                    startActivityForResult(intent,2);
-                    */
                 }
 
             }
@@ -475,7 +471,7 @@ public class MapsActivity extends ActionBarActivity {
     }
 
 
-    public void setUserLocation(){
+    public void setCarLocation(){
         rq = Volley.newRequestQueue(getApplicationContext());
 
         String s1=""+userLatLng.latitude;
@@ -546,7 +542,7 @@ public class MapsActivity extends ActionBarActivity {
         super.onDestroy();
     }
 
-    public void showCarsMethode(){
+    public void showUsersMethode(){
         boolean ready=false;
         if (!isOnline())
             Toast.makeText(getBaseContext(), "please check your internet connection", Toast.LENGTH_LONG).show();
