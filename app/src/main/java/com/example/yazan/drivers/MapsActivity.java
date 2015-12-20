@@ -122,8 +122,8 @@ public class MapsActivity extends ActionBarActivity {
                     //setCarLocation();
                     Toast.makeText(getBaseContext(),"showing now",Toast.LENGTH_SHORT).show();
                     //setCarLocation();
-                    showUsersMethode();
-                    //showObsMethode();
+                    //showUsersMethode();
+                    showObsMethode();
 //                    assignCarMethode();
 
                 }
@@ -701,6 +701,9 @@ public class MapsActivity extends ActionBarActivity {
             final String id = settings.getString("Id", "0");
             rq = Volley.newRequestQueue(getApplicationContext());
             String url= showObsUrl +"?id="+id;
+//            Toast.makeText(getApplication(),url,Toast.LENGTH_LONG).show();
+            Log.d("testtheshowobs",url);
+
             JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonObject) {
