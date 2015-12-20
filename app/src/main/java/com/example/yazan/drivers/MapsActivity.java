@@ -101,9 +101,12 @@ public class MapsActivity extends ActionBarActivity {
         {
             TextView mytv= (TextView) findViewById(R.id.tvbar);
             mytv.setText("please login or sign up to use the app!");
+            loginmethod();
         }
 
-        loginmethod();
+        if (isLoged)new MyTask().execute();
+
+
         ///////
 
 
@@ -120,10 +123,10 @@ public class MapsActivity extends ActionBarActivity {
 
                 else {
                     //setCarLocation();
-                    Toast.makeText(getBaseContext(),"showing now",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(),"showing now",Toast.LENGTH_SHORT).show();
                     //setCarLocation();
                     //showUsersMethode();
-                    showObsMethode();
+                    //showObsMethode();
 //                    assignCarMethode();
 
                 }
@@ -233,6 +236,7 @@ public class MapsActivity extends ActionBarActivity {
                             marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.car));
                             mMap.addMarker(marker);
                             userLatLng=new LatLng(arg0.getLatitude(),arg0.getLongitude());
+                            new MyTask2().execute();
                             isSet=true;
                         }
                     }
@@ -343,6 +347,7 @@ public class MapsActivity extends ActionBarActivity {
                 isLoged=true;
                 TextView textView=(TextView) findViewById(R.id.tvbar);
                 textView.setText("hello "+result);
+                new MyTask().execute();
                 startDialog.dismiss();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -365,6 +370,23 @@ public class MapsActivity extends ActionBarActivity {
         }
     }//onActivityResult
 
+    private class MyTask extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            showUsersMethode();
+            showObsMethode();
+            return null;
+        }
+    }
+    private class MyTask2 extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            setCarLocation();
+            return null;
+        }
+    }
     public void settingmethod()
     {
         final Dialog settingdialog=new Dialog(this,R.style.AppTheme);
@@ -484,7 +506,7 @@ public class MapsActivity extends ActionBarActivity {
 
                         }
                         else {
-                            Toast.makeText(getBaseContext(),"noooo work",Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getBaseContext(),"noooo work",Toast.LENGTH_LONG).show();
                         }
 
                     }catch (JSONException e) {
@@ -587,6 +609,8 @@ public class MapsActivity extends ActionBarActivity {
             WakeLocker.release();
         }
     };
+
+
 
     @Override
     protected void onDestroy() {
@@ -766,6 +790,10 @@ public class MapsActivity extends ActionBarActivity {
         }
 
     }
+
+
+
+
 
     public void addObsMethod(){
         boolean ready=false;
