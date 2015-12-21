@@ -104,7 +104,7 @@ public class MapsActivity extends ActionBarActivity {
             loginmethod();
         }
 
-        if (isLoged)new MyTask().execute();
+//        if (isLoged)new MyTask().execute();
 
 
         ///////
